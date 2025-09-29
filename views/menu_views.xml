@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Menú principal de Órdenes de Servicio -->
+    <menuitem id="menu_purchase_service_root"
+              name="Órdenes de Servicio"
+              parent="purchase.menu_purchase_root"
+              sequence="10"/>
+
+    <menuitem id="menu_purchase_order_service"
+              name="Órdenes de Servicio"
+              parent="menu_purchase_service_root"
+              action="action_purchase_order_service"
+              sequence="1"/>
+
+    <!-- Menú de Órdenes de Distribución -->
+    <menuitem id="menu_purchase_distribution_root"
+              name="Órdenes de Distribución"
+              parent="purchase.menu_purchase_root"
+              sequence="11"/>
+
+    <menuitem id="menu_purchase_order_distribution"
+              name="Órdenes de Distribución"
+              parent="menu_purchase_distribution_root"
+              action="action_purchase_order_distribution"
+              sequence="1"/>
+
+    <menuitem id="menu_service_routes"
+              name="Rutas de Servicio"
+              parent="menu_purchase_distribution_root"
+              action="action_service_route"
+              sequence="10"/>
+
+</odoo>

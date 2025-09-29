@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Primero definimos el formato de papel -->
+        <record id="paperformat_custom_service_order" model="report.paperformat">
+            <field name="name">Cotización A4 Personalizada</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">23</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- Luego definimos la acción del reporte -->
+        <record id="action_report_service_order" model="ir.actions.report">
+            <field name="name">Orden de Servicio</field>
+            <field name="model">service.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">peruanita_service_order.report_service_order</field>
+            <field name="report_file">peruanita_service_order.report_service_order</field>
+            <field name="binding_model_id" ref="model_service_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_custom_service_order"/>
+            <field name="print_report_name">'Orden de Servicio - %s' % object.name</field>
+        </record>
+
+    </data>
+</odoo>

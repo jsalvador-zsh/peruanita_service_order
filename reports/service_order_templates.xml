@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Plantilla principal de orden de servicio -->
+        <template id="report_service_order">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="peruanita_service_order.service_order_document" />
+                </t>
+            </t>
+        </template>
+
+        <!-- Documento principal de orden de servicio usando external_layout -->
+        <template id="service_order_document">
+            <t t-call="web.basic_layout">
+                <div class="page">
+
+                    <!-- Encabezado con número de orden -->
+                    <div class="row mb-2">
+                        <div class="col-12 text-center">
+                            <h2 style="font-weight: bold; margin-bottom: 5px;">
+                                ORDEN DE SERVICIO
+                            </h2>
+                            <p style="margin-bottom: 5px;">
+                                <strong>N°: </strong>
+                                <t t-esc="o.name or ''" />
+                            </p>
+                            <p style="margin-bottom: 10px;">
+                                <strong>Fecha: </strong>
+                                <t
+                                    t-esc="o.issue_date.strftime('%d/%m/%Y') if o.issue_date else ''" />
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Datos principales -->
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div style="padding: 10px; border-radius: 5px;">
+                                <h4
+                                    style="color: #2c3e50; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px;">
+                                    DATOS SOLICITANTE
+                                </h4>
+                                <table style="width:100%; font-size: 12px;">
+                                    <tr>
+                                        <td
+                                            style="padding: 5px; width: 40%; font-weight: bold;">
+                                            Área Solicitante:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t
+                                                t-esc="dict(o._fields['request_area'].selection).get(o.request_area, '')" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            Solicitante:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.requester_id.name or ''" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="padding: 10px; border-radius: 5px;">
+                                <h4
+                                    style="color: #2c3e50; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px;">
+                                    DATOS PROVEEDOR
+                                </h4>
+                                <t t-set="bank_info" t-value="o.get_supplier_bank_info()" />
+                                <table style="width:100%; font-size: 12px;">
+                                    <tr>
+                                        <td
+                                            style="padding: 5px; width: 30%; font-weight: bold;">
+                                            Proveedor:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.partner_id.name" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            RUC/DNI:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.partner_id.vat or ''" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            Contacto:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.partner_contact or ''" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            Teléfono:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.partner_id.phone or ''" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información bancaria -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div style="padding: 10px; border-radius: 5px;">
+                                <h4
+                                    style="color: #2c3e50; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px;">
+                                    INFORMACIÓN BANCARIA
+                                </h4>
+                                <table style="width:100%; font-size: 12px;">
+                                    <tr>
+                                        <td
+                                            style="padding: 5px; width: 15%; font-weight: bold;">
+                                            Banco:
+                                        </td>
+                                        <td style="padding: 5px; width: 35%;">
+                                            <t t-esc="bank_info.get('bank_name', '')" />
+                                        </td>
+                                        <td
+                                            style="padding: 5px; width: 15%; font-weight: bold;">
+                                            Nro. Cta:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="bank_info.get('account_number', '')" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            CCI:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="bank_info.get('cci_number', '')" />
+                                        </td>
+                                        <td style="padding: 5px; font-weight: bold;">
+                                            Moneda:
+                                        </td>
+                                        <td style="padding: 5px;">
+                                            <t t-esc="o.currency_id.name" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fecha entrega y condiciones -->
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div style="padding: 10px;">
+                                <p style="margin: 0; font-size: 12px;">
+                                    <strong>Fecha de Entrega:</strong>
+                                    <span
+                                        style="background-color: #f8f9fa; padding: 5px 10px; border-radius: 3px; display: inline-block;">
+                                        <t
+                                            t-esc="o.delivery_date.strftime('%d/%m/%Y') if o.delivery_date else 'Por definir'" />
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="padding: 10px;">
+                                <p style="margin: 0; font-size: 12px;">
+                                    <strong>Método de Pago:</strong>
+                                    <span
+                                        style="background-color: #f8f9fa; padding: 5px 10px; border-radius: 3px; display: inline-block;">
+                                        <t t-esc="o.payment_method.name or 'AL CONTADO'" />
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla servicios con el mismo estilo que sale.order -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <h4
+                                style="color: #2c3e50; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px;">
+                                DETALLE DE SERVICIOS
+                            </h4>
+                            <table class="table table-sm table-bordered"
+                                style="font-size: 12px;">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr style="font-weight: bold;">
+                                        <th
+                                            style="width: 40%; text-align: center; padding: 8px;">
+                                            DESCRIPCIÓN</th>
+                                        <th
+                                            style="width: 15%; text-align: center; padding: 8px;">
+                                            CANTIDAD</th>
+                                        <th
+                                            style="width: 15%; text-align: center; padding: 8px;">
+                                            UNIDAD</th>
+                                        <th
+                                            style="width: 15%; text-align: center; padding: 8px;">P.
+                                            UNITARIO</th>
+                                        <th
+                                            style="width: 15%; text-align: center; padding: 8px;">
+                                            TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="line_number" t-value="1" />
+                                    <t t-foreach="o.order_line" t-as="line">
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold;">
+                                                <strong t-esc="line.name" />
+                                            </td>
+                                            <td
+                                                style="text-align: center; padding: 8px; font-weight: bold;">
+                                                <strong
+                                                    t-esc="'{:,.0f}'.format(line.quantity)" />
+                                            </td>
+                                            <td
+                                                style="text-align: center; padding: 8px; font-weight: bold;">
+                                                <strong
+                                                    t-esc="line.product_uom.name.upper()" />
+                                            </td>
+                                            <td
+                                                style="text-align: center; padding: 8px; font-weight: bold;">
+                                                <strong>S/. <t
+                                                        t-esc="'{:,.2f}'.format(line.price_unit)" /></strong>
+                                            </td>
+                                            <td
+                                                style="text-align: center; padding: 8px; font-weight: bold;">
+                                                <strong>S/. <t
+                                                        t-esc="'{:,.2f}'.format(line.price_total)" /></strong>
+                                            </td>
+                                        </tr>
+                                        <t t-set="line_number" t-value="line_number + 1" />
+                                    </t>
+                                    <!-- Totales -->
+                                    <tr>
+                                        <td colspan="5"
+                                            style="text-align: right; padding: 8px; font-weight: bold; background-color: #f8f9fa;">
+                                            BASE IMPONIBLE:
+                                        </td>
+                                        <td
+                                            style="text-align: center; padding: 8px; font-weight: bold; background-color: #f8f9fa;"> S/. <t
+                                                t-esc="'{:,.2f}'.format(o.amount_untaxed)" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"
+                                            style="text-align: right; padding: 8px; font-weight: bold; background-color: #f8f9fa;">
+                                            IMPUESTOS:
+                                        </td>
+                                        <td
+                                            style="text-align: center; padding: 8px; font-weight: bold; background-color: #f8f9fa;"> S/. <t
+                                                t-esc="'{:,.2f}'.format(o.amount_tax)" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"
+                                            style="text-align: right; padding: 8px; font-weight: bold; background-color: #f8f9fa;">
+                                            TOTAL:
+                                        </td>
+                                        <td
+                                            style="text-align: center; padding: 8px; font-weight: bold; background-color: #f8f9fa;"> S/. <t
+                                                t-esc="'{:,.2f}'.format(o.amount_total)" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Observación -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div
+                                style="background-color: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                <h4
+                                    style="color: #2c3e50; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px;">
+                                    OBSERVACIONES
+                                </h4>
+                                <p style="margin: 0; font-size: 12px;">
+                                    <t t-esc="o.observation or 'Sin observaciones'" />
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Firmas -->
+                    <div class="row mb-2 text-center" style="margin-top: 30px;">
+                        <div class="col-4">
+                            <div
+                                style="border-top: 1px solid #2c3e50; padding-top: 10px; margin-top: 60px;">
+                                <p style="font-weight: bold; margin: 0; font-size: 12px;">ELABORADO
+                                    POR</p>
+                                <p style="margin: 0; font-size: 12px;">Nombre y Firma</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div
+                                style="border-top: 1px solid #2c3e50; padding-top: 10px; margin-top: 60px;">
+                                <p style="font-weight: bold; margin: 0; font-size: 12px;">RECIBIDO
+                                    POR</p>
+                                <p style="margin: 0; font-size: 12px;">Nombre y Firma</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div
+                                style="border-top: 1px solid #2c3e50; padding-top: 10px; margin-top: 60px;">
+                                <p style="font-weight: bold; margin: 0; font-size: 12px;">
+                                    TESORERÍA</p>
+                                <p style="margin: 0; font-size: 12px;">Nombre, Firma y Sello</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nota importante -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div
+                                style="background-color: #fff3cd; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                                <p
+                                    style="font-weight: bold; margin: 0; color: #856404; font-size: 12px;">
+                                    NOTA: De realizarse un pago mal coordinado o no
+                                    autorizado, el área solicitante será responsable de la
+                                    devolución y monto del pago.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conformidad -->
+                    <div class="row mb-2" style="margin-top: 30px;">
+                        <div class="col-12 text-center">
+                            <h4
+                                style="color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 5px; font-size: 14px;">
+                                <b>CONFORMIDAD DE SERVICIO PRESTADO</b>
+                            </h4>
+                        </div>
+                        <div class="col-6">
+                            <div
+                                style="border-top: 1px solid #2c3e50; padding-top: 10px; margin-top: 60px;">
+                                <p style="font-weight: bold; margin: 0; font-size: 12px;">FIRMA
+                                    DE CONFORMIDAD</p>
+                                <p style="margin: 0; font-size: 12px;">Nombre y Firma</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="padding: 10px;">
+                                <p
+                                    style="font-weight: bold; margin-bottom: 5px; font-size: 12px;">
+                                    OBSERVACIONES:</p>
+                                <div
+                                    style="min-height: 80px; border: 1px dashed #dee2e6; padding: 10px; font-size: 12px;">
+                                    <t
+                                        t-esc="o.conformity_observations or '………………………………………………………………………………'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </t>
+        </template>
+
+    </data>
+</odoo>
