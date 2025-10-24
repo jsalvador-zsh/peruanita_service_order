@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
+    <!-- Vista Tree heredada para mostrar campos personalizados -->
+    <record id="view_purchase_order_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="distributor_id" optional="hide"/>
+                <field name="destination_municipality_ids" optional="hide" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Vista de formulario para Orden de Servicio -->
     <record id="view_purchase_order_service_form" model="ir.ui.view">
         <field name="name">purchase.order.service.form</field>
@@ -49,13 +62,21 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Información de Distribución" invisible="not is_distribution_order">
                     <group>
-                        <group string="Fechas">
-                            <field name="scheduled_date"/>
-                            <field name="distribution_delivery_date"/>
+                        <group string="Información General">
+                            <field name="distributor_id" options="{'no_create': True}"/>
+                            <field name="destination_municipality_ids" widget="many2many_tags" options="{'no_create': True}"/>
                         </group>
                         <group string="Tipo de Servicio">
                             <field name="service_type"/>
                             <field name="vehicle_type"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Fechas">
+                            <field name="scheduled_date"/>
+                            <field name="distribution_delivery_date"/>
+                        </group>
+                        <group>
                         </group>
                     </group>
                     <group>

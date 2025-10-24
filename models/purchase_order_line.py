@@ -18,17 +18,17 @@ class PurchaseOrderLine(models.Model):
     
     weight = fields.Float(
         string='Kilos',
-        digits=(10, 2)
+        digits='Product Unit of Measure'
     )
     
     price_per_kg = fields.Float(
         string='Precio por Kilo',
-        digits=(10, 2)
+        digits='Product Unit of Measure'
     )
     
     distribution_price = fields.Float(
         string='Precio Distribución',
-        digits=(10, 2)
+        digits='Product Unit of Measure'
     )
     
     distribution_subtotal = fields.Float(

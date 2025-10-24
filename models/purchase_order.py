@@ -83,6 +83,22 @@ class PurchaseOrder(models.Model):
     )
 
     # ============== CAMPOS ORDEN DE DISTRIBUCIÓN ==============
+    distributor_id = fields.Many2one(
+        'res.partner',
+        string='Distribuidor',
+        tracking=True,
+        help='Distribuidor asignado a la orden de distribución'
+    )
+    
+    destination_municipality_ids = fields.Many2many(
+        'res.partner',
+        'purchase_order_municipality_rel',
+        'purchase_order_id',
+        'municipality_id',
+        string='Municipios Destino',
+        help='Municipios de destino para la distribución'
+    )
+    
     scheduled_date = fields.Datetime(
         string='Fecha Programada',
         tracking=True
